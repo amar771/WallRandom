@@ -8,3 +8,4 @@ python-decouple==3.1
 requests==2.18.4
 update-checker==0.16
 urllib3==1.22
+wget==3.2
