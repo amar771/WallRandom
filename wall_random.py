@@ -24,24 +24,37 @@ except:
 
 r.read_only = config("READ_ONLY", default=True, cast=bool)
 
-sub = r.subreddit('wallpaper')
-urls = []
+subs = config("SUBREDDITS",
+              cast=lambda v: [s.strip() for s in v.split(',')])
+
+sub = r.subreddit(choice(subs))
+
 
 # Stores links that are either
-for submission in sub.hot(limit=25):
-    valid_links = ['.png', '.jpg']
-    if any(link in submission.url.lower() for link in valid_links):
-        urls.append(submission.url)
+def get_images_urls():
+    urls = []
+    for submission in sub.hot(limit=25):
+        valid_links = ['.png', '.jpg']
+        if any(link in submission.url.lower() for link in valid_links):
+            urls.append(submission.url)
 
-final_link = choice(urls)
-downloaded = False
-while not downloaded:
-    try:
-        epoch_time = str(int(time()))
-        filename = epoch_time + final_link[final_link.len() - 4:]
-        print(filename)
-        file = download(final_link, bar=None)
-        downloaded = True
-    except:
-        final_link = choice(urls)
-        print("Failed to download link {}".format(final_link))
+    return urls
+
+
+def download_image(urls):
+    final_link = choice(urls)
+    downloaded = False
+    while not downloaded:
+        try:
+            # epoch_time = str(int(time()))
+            # filename = epoch_time + final_link[final_link.len() - 4:]
+            # print(epoch_time)
+            download(final_link, out="/tmp/", bar=None)
+            downloaded = True
+        except:
+            final_link = choice(urls)
+            print("Failed to download link {}".format(final_link))
+
+
+if __name__ == "__main__":
+    download_image(get_images_urls())
