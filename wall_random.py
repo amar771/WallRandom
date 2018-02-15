@@ -7,6 +7,8 @@ from time import time
 # OS functions
 from os import listdir
 from os import rename
+from os import path
+from os import makedirs
 
 # Setup for using praw
 r = Reddit(client_id=config("CLIENT_ID", default=''),
@@ -42,6 +44,10 @@ def get_images_urls():
 
 
 def download_image(urls):
+
+    if not path.exists("/tmp/wallrandom/"):
+        makedirs("/tmp/wallrandom/")
+
     final_link = choice(urls)
     downloaded = False
     while not downloaded:
@@ -49,7 +55,7 @@ def download_image(urls):
             # epoch_time = str(int(time()))
             # filename = epoch_time + final_link[final_link.len() - 4:]
             # print(epoch_time)
-            download(final_link, out="/tmp/", bar=None)
+            download(final_link, out="/tmp/wallrandom/", bar=None)
             downloaded = True
         except:
             final_link = choice(urls)
