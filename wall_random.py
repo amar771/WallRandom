@@ -30,6 +30,7 @@ subs = config("SUBREDDITS",
               cast=lambda v: [s.strip() for s in v.split(',')])
 
 sub = r.subreddit(choice(subs))
+directory = config("DIRECTORY", default="/tmp/wallrandom/")
 
 
 # Stores links that are either
@@ -45,17 +46,21 @@ def get_images_urls():
 
 def download_image(urls):
 
-    if not path.exists("/tmp/wallrandom/"):
-        makedirs("/tmp/wallrandom/")
+    if not path.exists(directory):
+        makedirs(directory)
 
     final_link = choice(urls)
     downloaded = False
     while not downloaded:
         try:
-            # epoch_time = str(int(time()))
-            # filename = epoch_time + final_link[final_link.len() - 4:]
-            # print(epoch_time)
-            download(final_link, out="/tmp/wallrandom/", bar=None)
+            epoch_time = str(int(time()))
+            filename = "current" +\
+                       epoch_time +\
+                       final_link[len(final_link) - 4:]
+
+            file = directory + filename
+
+            download(final_link, out=file, bar=None)
             downloaded = True
         except:
             final_link = choice(urls)
