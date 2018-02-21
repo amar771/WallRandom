@@ -9,6 +9,7 @@ from os import listdir
 from os import rename
 from os import path
 from os import makedirs
+from os import unlink
 
 # Setup for using praw
 r = Reddit(client_id=config("CLIENT_ID", default=''),
@@ -44,8 +45,28 @@ def get_images_urls():
     return urls
 
 
-def download_image(urls):
+def remove_from_tmp():
+    '''Cleans tmp directory from other images so the script can
+    set it as background.
+    '''
+    if not path.exists(directory):
+        return True
 
+    else:
+        for image in listdir(directory):
+            image_path = path.join(directory, image)
+            if any(file in str(image) for file in ['.png', '.jpg']):
+                try:
+                    if path.isfile(image_path):
+                        unlink(image_path)
+
+                except:
+                    print("Unable to delete {}".format(image_path))
+
+
+def download_image(urls):
+    '''Downloads image with current epoch as name
+    '''
     if not path.exists(directory):
         makedirs(directory)
 
@@ -54,9 +75,7 @@ def download_image(urls):
     while not downloaded:
         try:
             epoch_time = str(int(time()))
-            filename = "current" +\
-                       epoch_time +\
-                       final_link[len(final_link) - 4:]
+            filename = epoch_time + final_link[len(final_link) - 4:]
 
             file = directory + filename
 
@@ -68,4 +87,5 @@ def download_image(urls):
 
 
 if __name__ == "__main__":
+    remove_from_tmp()
     download_image(get_images_urls())
