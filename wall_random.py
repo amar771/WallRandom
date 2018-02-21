@@ -9,6 +9,7 @@ from os import listdir
 from os import path
 from os import makedirs
 from os import unlink
+from os import system
 
 from shutil import copyfile
 
@@ -86,6 +87,21 @@ def copy_image():
                 print("Unable to copy file to permanent location")
 
 
+def set_as_background():
+    '''
+    Sets downloaded image as a background image
+    Uses feh to do the job
+    '''
+    if len(listdir(directory)) == 1:
+        image = listdir(directory)[0]
+        image_path = path.join(directory, image)
+
+        if '.jpg' in image or '.png' in image:
+            command = 'feh --bg-fill {}'.format(image_path)
+            print(command)
+            system(command)
+
+
 def download_image(urls):
     '''Downloads image with current epoch as name'''
     if not path.exists(directory):
@@ -106,10 +122,10 @@ def download_image(urls):
             final_link = choice(urls)
             print("Failed to download link {}".format(final_link))
 
-
 if __name__ == "__main__":
     remove_from_tmp()
     download_image(get_images_urls())
+    set_as_background()
 
     if save:
         copy_image()
