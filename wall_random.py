@@ -6,10 +6,12 @@ from time import time
 
 # OS functions
 from os import listdir
-from os import rename
 from os import path
 from os import makedirs
 from os import unlink
+
+from shutil import copyfile
+
 
 # Setup for using praw
 r = Reddit(client_id=config("CLIENT_ID", default=''),
@@ -33,9 +35,13 @@ subs = config("SUBREDDITS",
 sub = r.subreddit(choice(subs))
 directory = config("DIRECTORY", default="/tmp/wallrandom/")
 
+save = config("SAVE", default=True, cast=bool)
+save_path = config("SAVE_PATH", default="~/Pictures/WallRandom/")
+
 
 # Stores links that are either
 def get_images_urls():
+    '''Gets url from image'''
     urls = []
     for submission in sub.hot(limit=25):
         valid_links = ['.png', '.jpg']
@@ -64,9 +70,24 @@ def remove_from_tmp():
                     print("Unable to delete {}".format(image_path))
 
 
+def copy_image():
+    '''Copies image from temporary directory to permanent one'''
+    if not path.exists(save_path):
+        makedirs(save_path)
+
+    for image in listdir(directory):
+        image_path_tmp = path.join(directory, image)
+        image_path_perm = path.join(save_path, image)
+        if any(file in str(image) for file in ['.png', '.jpg']):
+            try:
+                copyfile(image_path_tmp, image_path_perm)
+
+            except:
+                print("Unable to copy file to permanent location")
+
+
 def download_image(urls):
-    '''Downloads image with current epoch as name
-    '''
+    '''Downloads image with current epoch as name'''
     if not path.exists(directory):
         makedirs(directory)
 
@@ -89,3 +110,6 @@ def download_image(urls):
 if __name__ == "__main__":
     remove_from_tmp()
     download_image(get_images_urls())
+
+    if save:
+        copy_image()
