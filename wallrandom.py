@@ -98,7 +98,6 @@ def set_as_background():
 
         if '.jpg' in image or '.png' in image:
             command = 'feh --bg-fill {}'.format(image_path)
-            print(command)
             system(command)
 
 

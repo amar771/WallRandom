@@ -1,8 +1,28 @@
 # WallRandom
 
-## Work in progress
-
 Gets random wallpaper from specified subreddits and sets it as background every time you log in to your account.
+
+### Installation
+
+    $ sudo apt install feh
+
+    $ git clone wallrandom
+    $ cd wallrandom
+    $ sudo chmod u+x wallrandom.sh
+    $ cp .env.example .env
+    $ python3 -m venv venv/
+    $ source venv/bin/activate
+    (venv)$ pip3 install -r requirements.txt
+
+Edit the .env file with your information.
+
+Edit the wallrandom.sh file with the directory to the wallrandom.py
+
+Add wallrandom.sh to one of these starting from top:
+
+    ~/.bash_profile
+    ~/.bash_login
+    ~/.profile
 
 ###### TODO:
 
@@ -12,4 +32,5 @@ Gets random wallpaper from specified subreddits and sets it as background every 
 - [x] Can set the directory to save files to
 - [x] Sets the downloaded file to background
 - [x] Can specify to either save or delete the wallpapers after use
-- [] Added CLI parameters/functions
+- [] Add CLI parameters/functions
+- [] Add custom logging
