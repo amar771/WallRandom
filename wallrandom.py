@@ -189,15 +189,17 @@ def settings():
                 file.write("\n")
 
 
-if __name__ == "__main__":
-    something = True
-    if something:
+def menu():
+    '''Menu for all possible settings'''
+    good = True
+    if good:
         remove_from_tmp()
         download_image(get_images_urls())
         set_as_background()
 
-        if save:
-            copy_image()
-
     else:
         settings()
+
+
+if __name__ == "__main__":
+    menu()
