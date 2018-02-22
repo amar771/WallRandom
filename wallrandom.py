@@ -121,10 +121,83 @@ def download_image(urls):
             final_link = choice(urls)
             print("Failed to download link {}".format(final_link))
 
-if __name__ == "__main__":
-    remove_from_tmp()
-    download_image(get_images_urls())
-    set_as_background()
 
-    if save:
-        copy_image()
+def user_input(separated):
+    bool_questions = ["True", "False"]
+    print("Enter {} (\"{}\")".format(separated[0], separated[1]),
+          end='',
+          flush=True)
+
+    if separated[1] in bool_questions:
+        bad_input = True
+        print()
+        while bad_input:
+            print("Please enter Yes/No ",
+                  end='',
+                  flush=True)
+
+            user = str(input("[Blank for default] # --> "))
+            if not user:
+                bad_input = False
+
+            elif user.lower()[0] is "y":
+                user = "True"
+                bad_input = False
+
+            elif user.lower()[0] is "n":
+                user = "False"
+                bad_input = False
+
+            else:
+                bad_input = True
+
+    else:
+        user = str(input("[Blank for default] # --> "))
+
+    # if input is blank
+    if not user:
+        return separated[1]
+
+    return user
+
+
+def settings():
+    '''Settings for the application'''
+    # Read all non comment lines from .env.example file
+    example_env = []
+    with open(".env.example", "r") as file:
+        for line in file:
+            if line[0] is not "#":
+                fixed_line = line[:len(line) - 1]
+                example_env.append(fixed_line)
+
+    # Write to .env file
+    with open(".env", "w") as file:
+        for line in example_env:
+            # If line is empty just copy it
+            if not line:
+                file.write(line)
+                file.write("\n")
+            # Else separate it in variable and value and ask for input
+            else:
+                separated = line.split("=")
+                file.write(separated[0])
+                file.write("=")
+
+                user = user_input(separated)
+                file.write(user)
+                file.write("\n")
+
+
+if __name__ == "__main__":
+    something = True
+    if something:
+        remove_from_tmp()
+        download_image(get_images_urls())
+        set_as_background()
+
+        if save:
+            copy_image()
+
+    else:
+        settings()
