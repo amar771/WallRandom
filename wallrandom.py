@@ -13,6 +13,8 @@ from os import system
 
 from shutil import copyfile
 
+from argparse import ArgumentParser
+
 
 # Setup for using praw
 r = Reddit(client_id=config("CLIENT_ID", default=''),
@@ -161,6 +163,10 @@ def user_input(separated):
     return user
 
 
+def subreddits():
+    print("Subreddits called")
+
+
 def settings():
     '''Settings for the application'''
     # Read all non comment lines from .env.example file
@@ -191,14 +197,34 @@ def settings():
 
 def menu():
     '''Menu for all possible settings'''
-    good = True
-    if good:
+    parser = ArgumentParser()
+
+    parser.add_argument('-v', '--version',
+                        action='version',
+                        version='%(prog)s 1.0')
+
+    settings_group = parser.add_mutually_exclusive_group()
+    settings_group.add_argument('-s', '--settings',
+                                action='store_true',
+                                help='Program settings',
+                                required=False)
+
+    settings_group.add_argument('-S', '--subreddits',
+                                action='store_true',
+                                help='changes subreddits',
+                                required=False)
+
+    args = parser.parse_args()
+    if len(vars(args)) is 0:
         remove_from_tmp()
         download_image(get_images_urls())
         set_as_background()
 
-    else:
+    elif args.settings:
         settings()
+
+    elif args.subreddits:
+        subreddits()
 
 
 if __name__ == "__main__":
