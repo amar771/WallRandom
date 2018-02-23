@@ -164,7 +164,32 @@ def user_input(separated):
 
 
 def subreddits():
-    print("Subreddits called")
+    '''For changing settings'''
+    env_file = []
+    with open(".env", "r") as file:
+        for line in file:
+            fixed_line = line[:len(line) - 1]
+            env_file.append(fixed_line)
+
+    with open(".env", "w") as file:
+        for line in env_file:
+            if not line:
+                file.write(line)
+                file.write("\n")
+
+            else:
+                separated = line.split("=")
+                if separated[0] == "SUBREDDITS":
+                    file.write(separated[0])
+                    file.write("=")
+
+                    user = user_input(separated)
+                    file.write(user)
+                    file.write("\n")
+
+                else:
+                    file.write(line)
+                    file.write("\n")
 
 
 def settings():
