@@ -183,6 +183,17 @@ def subreddits():
                     file.write(separated[0])
                     file.write("=")
 
+                    # For nicer user input
+                    user = ""
+                    finished = False
+                    print("Please enter a subreddits you want to use.")
+                    print("For example: wallpaper")
+                    while not finished:
+                        user += str(input("[Blank to finish]"))
+                        user += ", "
+
+                    user = user[:len(user) - 2]
+                    print(user)
                     user = user_input(separated)
                     file.write(user)
                     file.write("\n")
@@ -240,16 +251,17 @@ def menu():
                                 required=False)
 
     args = parser.parse_args()
-    if len(vars(args)) is 0:
-        remove_from_tmp()
-        download_image(get_images_urls())
-        set_as_background()
-
-    elif args.settings:
+    if args.settings:
         settings()
 
     elif args.subreddits:
         subreddits()
+
+    else:
+        print("Should work")
+        remove_from_tmp()
+        download_image(get_images_urls())
+        set_as_background()
 
 
 if __name__ == "__main__":
