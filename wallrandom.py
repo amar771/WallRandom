@@ -43,13 +43,17 @@ save_path = config("SAVE_PATH", default="~/Pictures/WallRandom/")
 
 
 # Stores links that are either
-def get_images_urls():
+def get_images_urls(sub=sub):
     '''Gets url from image'''
     urls = []
     for submission in sub.hot(limit=25):
         valid_links = ['.png', '.jpg']
         if any(link in submission.url.lower() for link in valid_links):
             urls.append(submission.url)
+
+    if len(urls) is 0:
+        new_sub = r.subreddit(choice(subs))
+        return(get_images_urls(new_sub))
 
     return urls
 
@@ -195,18 +199,19 @@ def subreddits():
                     print("For example: wallpaper")
                     while not finished:
                         new_sub = str(input("[Blank to finish] --> "))
-                        if not new_sub:
-                            new_sub = ""
-                            finished = True
-
-                        if not user:
+                        if not new_sub and not user:
                             print("No subreddit was entered.")
                             print("Default subreddit is wallpaper")
                             user = "wallpaper"
+                            finished = True
 
-                        user += new_sub + ", "
+                        elif not new_sub:
+                            finished = True
+                            user = user[:len(user) - 2]
 
-                    user = user[:len(user) - 2]
+                        else:
+                            user += new_sub + ", "
+
                     file.write(user)
                     file.write("\n")
 
@@ -270,7 +275,6 @@ def menu():
         subreddits()
 
     else:
-        print("Should work")
         remove_from_tmp()
         download_image(get_images_urls())
         set_as_background()
