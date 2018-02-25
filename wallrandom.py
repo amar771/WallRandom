@@ -168,8 +168,13 @@ def subreddits():
     env_file = []
     with open(".env", "r") as file:
         for line in file:
-            fixed_line = line[:len(line) - 1]
-            env_file.append(fixed_line)
+            newline_check = line[len(line) - 1:]
+
+            if newline_check is "\n":
+                fixed_line = line[:len(line) - 1]
+                env_file.append(fixed_line)
+            else:
+                env_file.append(line)
 
     with open(".env", "w") as file:
         for line in env_file:
@@ -189,7 +194,7 @@ def subreddits():
                     print("Please enter a subreddits you want to use.")
                     print("For example: wallpaper")
                     while not finished:
-                        new_sub = str(input("[Blank to finish]"))
+                        new_sub = str(input("[Blank to finish] --> "))
                         if not new_sub:
                             new_sub = ""
                             finished = True
