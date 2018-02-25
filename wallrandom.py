@@ -189,12 +189,19 @@ def subreddits():
                     print("Please enter a subreddits you want to use.")
                     print("For example: wallpaper")
                     while not finished:
-                        user += str(input("[Blank to finish]"))
-                        user += ", "
+                        new_sub = str(input("[Blank to finish]"))
+                        if not new_sub:
+                            new_sub = ""
+                            finished = True
+
+                        if not user:
+                            print("No subreddit was entered.")
+                            print("Default subreddit is wallpaper")
+                            user = "wallpaper"
+
+                        user += new_sub + ", "
 
                     user = user[:len(user) - 2]
-                    print(user)
-                    user = user_input(separated)
                     file.write(user)
                     file.write("\n")
 
