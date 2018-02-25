@@ -9,12 +9,10 @@ Gets random wallpaper from specified subreddits and sets it as background every 
     $ git clone wallrandom
     $ cd wallrandom
     $ sudo chmod u+x wallrandom.sh
-    $ cp .env.example .env
     $ python3 -m venv venv/
     $ source venv/bin/activate
     (venv)$ pip3 install -r requirements.txt
-
-Edit the .env file with your information.
+    (venv)$ python wallrandom.py --settings
 
 Edit the wallrandom.sh file with the directory to the wallrandom.py
 
