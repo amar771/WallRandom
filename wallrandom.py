@@ -1,4 +1,5 @@
 from praw import Reddit
+from prawcore import NotFound
 from decouple import config
 from wget import download
 from random import choice
@@ -42,7 +43,19 @@ save = config("SAVE", default=True, cast=bool)
 save_path = config("SAVE_PATH", default="~/Pictures/WallRandom/")
 
 
-# Stores links that are either
+# https://redd.it/68dhpm
+def subreddit_exists(sub):
+    exists = True
+    try:
+        r.subreddits.search_by_name(sub, exact=True)
+
+    except NotFound:
+        exists = False
+
+    return exists
+
+
+# Stores links that are either jpg or png
 def get_images_urls(sub=sub):
     '''Gets url from image'''
     urls = []
@@ -210,7 +223,14 @@ def subreddits():
                             user = user[:len(user) - 2]
 
                         else:
-                            user += new_sub + ", "
+                            sub = r.subreddit(new_sub)
+
+                            if subreddit_exists(sub):
+                                user += new_sub + ", "
+
+                            else:
+                                print("Not a valid subreddit.", end='')
+                                print(" Please try again.")
 
                     file.write(user)
                     file.write("\n")
@@ -224,11 +244,28 @@ def settings():
     '''Settings for the application'''
     # Read all non comment lines from .env.example file
     example_env = []
-    with open(".env.example", "r") as file:
+    file_to_open = ""
+    if ".env" in listdir("."):
+        file_to_open = ".env"
+
+    elif ".env.example" in listdir("."):
+        file_to_open = ".env.example"
+
+    else:
+        print("There are no .env files. \nExiting.")
+        return()
+
+    with open(file_to_open, "r") as file:
         for line in file:
             if line[0] is not "#":
-                fixed_line = line[:len(line) - 1]
-                example_env.append(fixed_line)
+                newline_check = line[len(line) - 1:]
+
+                if newline_check is "\n":
+                    fixed_line = line[:len(line) - 1]
+                    example_env.append(fixed_line)
+
+                else:
+                    example_env.append(line)
 
     # Write to .env file
     with open(".env", "w") as file:
@@ -237,15 +274,23 @@ def settings():
             if not line:
                 file.write(line)
                 file.write("\n")
+
             # Else separate it in variable and value and ask for input
             else:
                 separated = line.split("=")
-                file.write(separated[0])
-                file.write("=")
+                if separated[0] == "SUBREDDITS":
+                    file.write(separated[0])
+                    file.write("=wallpaper")
 
-                user = user_input(separated)
-                file.write(user)
-                file.write("\n")
+                else:
+                    file.write(separated[0])
+                    file.write("=")
+
+                    user = user_input(separated)
+                    file.write(user)
+                    file.write("\n")
+
+    subreddits()
 
 
 def menu():
