@@ -81,13 +81,12 @@ def remove_from_tmp():
     else:
         for image in listdir(directory):
             image_path = path.join(directory, image)
-            if any(file in str(image) for file in ['.png', '.jpg']):
-                try:
-                    if path.isfile(image_path):
-                        unlink(image_path)
+            try:
+                if path.isfile(image_path):
+                    unlink(image_path)
 
-                except:
-                    print("Unable to delete {}".format(image_path))
+            except:
+                print("Unable to delete {}".format(image_path))
 
 
 def copy_image():
