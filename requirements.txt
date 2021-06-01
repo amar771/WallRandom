@@ -7,5 +7,5 @@ prawcore==0.13.0
 python-decouple==3.1
 requests==2.18.4
 update-checker==0.16
-urllib3==1.22
+urllib3==1.26.5
 wget==3.2
